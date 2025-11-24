@@ -3,595 +3,569 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Creativity Equation: A Mathematical Approach</title>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>Creativity: The Simonton Equation</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --accent: #3498db;
-            --highlight: #e74c3c;
-            --light: #ecf0f1;
-            --text: #333;
-            --sidebar-width: 280px;
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.7;
+            background: var(--bg);
             color: var(--text);
-            margin: 0;
             display: flex;
-            min-height: 100vh;
-            background-color: #f9f9f9;
+            height: 100vh;
+            overflow: hidden;
         }
 
         /* Sidebar Navigation */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: var(--primary);
-            color: white;
-            position: fixed;
-            height: 100vh;
-            padding: 2rem 1rem;
+        aside {
+            width: 280px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
+            padding: 1.5rem;
+            flex-shrink: 0;
+            overflow-y: auto;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
+        aside h1 {
+            font-size: 1.25rem;
+            color: var(--primary);
             margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-weight: 800;
         }
 
         .nav-btn {
-            background: none;
+            background: transparent;
             border: none;
-            color: rgba(255,255,255,0.7);
             text-align: left;
             padding: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
-            border-radius: 5px;
             margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            color: var(--secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
         }
 
-        .nav-btn:hover, .nav-btn.active {
-            background: rgba(255,255,255,0.1);
+        .nav-btn:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
             color: white;
-            padding-left: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
         }
 
         /* Main Content */
-        .main-content {
-            margin-left: var(--sidebar-width);
+        main {
             flex: 1;
-            padding: 3rem 4rem;
-            max-width: 1200px;
+            overflow-y: auto;
+            padding: 3rem;
+            scroll-behavior: smooth;
         }
 
-        .page-section {
+        .page {
             display: none;
-            animation: fadeIn 0.5s;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease;
         }
 
-        .page-section.active {
+        .page.active {
             display: block;
         }
 
-        h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
-        h2 { font-size: 1.8rem; color: var(--accent); margin-top: 2.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px;}
-        h3 { font-size: 1.4rem; color: var(--primary); margin-top: 2rem; }
-
-        /* Cards and Callouts */
-        .card {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 2rem;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .example-box {
-            background: #f0f8ff;
-            border-left: 5px solid var(--accent);
+        /* Typography & Elements */
+        h2 { font-size: 2rem; margin-bottom: 1.5rem; color: var(--text); }
+        h3 { font-size: 1.5rem; margin-top: 2rem; margin-bottom: 1rem; color: var(--primary-dark); }
+        p { line-height: 1.7; margin-bottom: 1rem; color: #334155; }
+        
+        .highlight-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
             padding: 1.5rem;
             margin: 1.5rem 0;
-            border-radius: 0 5px 5px 0;
+            border-radius: 0 0.5rem 0.5rem 0;
         }
 
-        .math-pattern {
-            font-family: 'Courier New', monospace;
-            background: #333;
-            color: #0f0;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-top: 1rem;
-        }
-
-        /* The Equation Lab Styles */
-        .slider-container {
-            margin: 20px 0;
-        }
-        
-        .slider-label {
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        input[type=range] {
-            width: 100%;
-            height: 10px;
-            border-radius: 5px;
-            background: #d3d3d3;
-            outline: none;
-        }
-
-        .result-box {
-            text-align: center;
-            background: var(--primary);
+        .equation-box {
+            background: var(--text);
             color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        .result-value {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #f1c40f;
-        }
-
-        /* Interactive Typology Grid */
-        .type-grid {
+        /* Type Cards */
+        .grid-types {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
 
         .type-card {
             background: white;
-            border: 1px solid #eee;
-            padding: 20px;
-            border-radius: 8px;
-            cursor: pointer;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 1rem;
             transition: transform 0.2s;
         }
 
         .type-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            border-color: var(--accent);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
         }
 
-        .type-card h4 { margin-top: 0; color: var(--primary); }
-        
-        .tag {
+        .type-card.creative {
+            border: 2px solid var(--success);
+            background: #f0fdf4;
+        }
+
+        .math-pattern {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .param-badge {
             display: inline-block;
-            padding: 4px 8px;
+            padding: 0.25rem 0.5rem;
             border-radius: 4px;
-            font-size: 0.8rem;
             font-weight: bold;
+            font-size: 0.8rem;
             margin-right: 5px;
         }
-        .tag.high-p { background: #ffebee; color: #c62828; }
-        .tag.low-p { background: #e8f5e9; color: #2e7d32; }
+        .bg-p { background: #dbeafe; color: #1e40af; }
+        .bg-u { background: #dcfce7; color: #166534; }
+        .bg-v { background: #fee2e2; color: #991b1b; }
 
         /* Quiz Styles */
-        .quiz-option {
-            display: block;
-            padding: 15px;
-            border: 2px solid #eee;
-            margin-bottom: 10px;
-            border-radius: 5px;
+        .quiz-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .quiz-btn {
+            padding: 1rem;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            text-align: left;
             cursor: pointer;
-        }
-        .quiz-option:hover { background: #f9f9f9; border-color: #ccc; }
-        .quiz-option.correct { background: #d4edda; border-color: #28a745; color: #155724; }
-        .quiz-option.incorrect { background: #f8d7da; border-color: #dc3545; color: #721c24; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            border-radius: 0.5rem;
         }
 
-        /* Responsive */
+        .quiz-btn:hover { background: #e2e8f0; }
+        .quiz-btn.correct { background: #dcfce7; border-color: var(--success); }
+        .quiz-btn.incorrect { background: #fee2e2; border-color: var(--danger); }
+
+        /* Calculator */
+        .slider-group { margin-bottom: 1.5rem; }
+        input[type=range] { width: 100%; margin-top: 0.5rem; }
+
         @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; }
-            .main-content { margin-left: 0; padding: 2rem; }
+            body { flex-direction: column; overflow: auto; }
+            aside { width: 100%; height: auto; padding: 1rem; }
+            main { padding: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div class="logo">The Creativity Equation</div>
-        <button class="nav-btn active" onclick="showPage('intro')">1. The Three Variables</button>
-        <button class="nav-btn" onclick="showPage('high-p')">2. High Probability Solutions</button>
-        <button class="nav-btn" onclick="showPage('low-p')">3. Low Probability Solutions</button>
-        <button class="nav-btn" onclick="showPage('equation')">4. The Lab: Calculator</button>
-        <button class="nav-btn" onclick="showPage('implications')">5. Implications & Methods</button>
-        <button class="nav-btn" onclick="showPage('quiz')">6. Quiz</button>
-    </div>
+    <aside>
+        <h1>Creativity Master</h1>
+        <nav>
+            <button class="nav-btn active" onclick="showPage('intro')">1. Introduction</button>
+            <button class="nav-btn" onclick="showPage('variables')">2. The 3 Variables</button>
+            <button class="nav-btn" onclick="showPage('types')">3. The 8 Types of Solutions</button>
+            <button class="nav-btn" onclick="showPage('equation')">4. The Equation</button>
+            <button class="nav-btn" onclick="showPage('process')">5. The Process (Incubation)</button>
+            <button class="nav-btn" onclick="showPage('tools')">6. Tools & Techniques</button>
+            <button class="nav-btn" onclick="showPage('quiz')">7. Quiz: Test Yourself</button>
+        </nav>
+    </aside>
 
-    <div class="main-content">
-
-        <div id="intro" class="page-section active">
-            <h1>Understanding Creative Solutions</h1>
-            <div class="card">
-                <p>Most ideas are actually combinations of existing ideas. The Wright Brothers' airplane was bicycle mechanics + combustion engine + boat propeller. But what makes some combinations "creative" and others just "routine"?</p>
-                <p>To understand this, we define the "DNA" of a solution using three variables.</p>
-            </div>
-
-            <h2>The Three Variables</h2>
-            
-            <div class="card">
-                <h3>1. Probability ($p$)</h3>
-                <p><strong>"Is it obvious?"</strong> This measures how likely you are to think of the idea immediately.</p>
-                <div class="example-box">
-                    <strong>High $p$ (Obvious):</strong> Drinking water when thirsty.<br>
-                    <strong>Low $p$ (Rare):</strong> Drinking cactus juice when lost in the desert.
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>2. Utility ($u$)</h3>
-                <p><strong>"Does it work?"</strong> This measures whether the solution actually solves the problem.</p>
-                <div class="example-box">
-                    <strong>High $u$ (Works):</strong> Using a key to open a door.<br>
-                    <strong>Low $u$ (Fails):</strong> Using a banana to open a door.
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>3. Prior Knowledge ($v$)</h3>
-                <p><strong>"Did you know it would work?"</strong> This is the most critical variable for creativity. It measures your knowledge <em>before</em> you try the solution.</p>
-                <div class="example-box">
-                    <strong>High $v$ (Certainty):</strong> You know your key will start your car.<br>
-                    <strong>Low $v$ (Surprise):</strong> You wiggle a paperclip in a lock, not knowing if it will open. If it does, you are surprised!
-                </div>
-            </div>
-            
-            <button class="nav-btn" style="background: var(--accent); color: white; margin-top: 20px;" onclick="showPage('high-p')">Next: The Non-Creative Types &rarr;</button>
-        </div>
-
-        <div id="high-p" class="page-section">
-            <h1>High Probability Solutions ($p \rightarrow 1$)</h1>
-            <p>Before defining creativity, we must understand what is <em>not</em> creative. These are ideas that come quickly to mind.</p>
-
-            <div class="type-grid">
-                <div class="type-card">
-                    <span class="tag high-p">Type 1</span>
-                    <h4>Routine Ideas</h4>
-                    <p>You know exactly what to do, and you know it works. This is valuable for daily life, but has zero creativity.</p>
-                    <div class="math-pattern">
-                        p → 1 (Obvious)<br>
-                        u → 1 (Works)<br>
-                        v → 1 (Known)
-                    </div>
-                    <p><em>Example: Your morning coffee routine.</em></p>
-                </div>
-
-                <div class="type-card">
-                    <span class="tag high-p">Type 2</span>
-                    <h4>Lucky Guesses</h4>
-                    <p>Your first instinct works, but you had no reason to think it would. You learned nothing transferable.</p>
-                    <div class="math-pattern">
-                        p → 1 (Obvious)<br>
-                        u → 1 (Works)<br>
-                        v → 0 (Unknown)
-                    </div>
-                    <p><em>Example: Guessing a password on the first try.</em></p>
-                </div>
-
-                <div class="type-card">
-                    <span class="tag high-p">Type 3</span>
-                    <h4>Spinning Your Wheels</h4>
-                    <p>Repeating a solution you know doesn't work, hoping for a different result. Irrational perseveration.</p>
-                    <div class="math-pattern">
-                        p → 1 (Obvious)<br>
-                        u → 0 (Fails)<br>
-                        v → 1 (Known failure)
-                    </div>
-                    <p><em>Example: Using the same bad study habits but expecting an A.</em></p>
-                </div>
-
-                <div class="type-card">
-                    <span class="tag high-p">Type 4</span>
-                    <h4>Problem Finding</h4>
-                    <p>You try an obvious solution expecting it to work, but surprisingly, it fails. This reveals a new problem.</p>
-                    <div class="math-pattern">
-                        p → 1 (Obvious)<br>
-                        u → 0 (Fails)<br>
-                        v → 0 (Surprising failure)
-                    </div>
-                    <p><em>Example: Scientists using Newton's laws on Mercury's orbit, finding they didn't match.</em></p>
-                </div>
-            </div>
-        </div>
-
-        <div id="low-p" class="page-section">
-            <h1>Low Probability Solutions ($p \rightarrow 0$)</h1>
-            <p>These are ideas that are rare, ignored, or require time to emerge.</p>
-
-            <div class="type-grid">
-                <div class="type-card">
-                    <span class="tag low-p">Type 5</span>
-                    <h4>Smart Filtering</h4>
-                    <p>You rationally avoid ideas because your prior knowledge tells you they are useless.</p>
-                    <div class="math-pattern">
-                        p → 0 (Rare)<br>
-                        u → 0 (Useless)<br>
-                        v → 1 (Known useless)
-                    </div>
-                    <p><em>Example: Einstein not putting clowns in his relativity equations.</em></p>
-                </div>
-
-                <div class="type-card">
-                    <span class="tag low-p">Type 6</span>
-                    <h4>Shooting Yourself in the Foot</h4>
-                    <p>Irrational suppression. You avoid a useful solution even though you know it would help.</p>
-                    <div class="math-pattern">
-                        p → 0 (Avoided)<br>
-                        u → 1 (Useful)<br>
-                        v → 1 (Known useful)
-                    </div>
-                    <p><em>Example: Knowing exercise helps (u=1) but refusing to do it (p=0).</em></p>
-                </div>
-
-                <div class="type-card">
-                    <span class="tag low-p">Type 7</span>
-                    <h4>Mind-Wandering</h4>
-                    <p>Random thoughts (shower thoughts). Most are useless, but you don't know until you check.</p>
-                    <div class="math-pattern">
-                        p → 0 (Random)<br>
-                        u → 0 (Useless)<br>
-                        v → 0 (Unknown)
-                    </div>
-                    <p><em>Example: Random daydreaming that leads nowhere.</em></p>
-                </div>
-
-                <div class="type-card" style="border: 2px solid gold; background: #fffdf0;">
-                    <span class="tag low-p" style="background:gold; color:black;">Type 8</span>
-                    <h4>CREATIVE SOLUTIONS</h4>
-                    <p>The only path to genuine creativity.</p>
-                    <div class="math-pattern">
-                        p → 0 (Not Obvious)<br>
-                        u → 1 (It Works!)<br>
-                        v → 0 (Surprise!)
-                    </div>
-                    <p><em>Example: Edison's bamboo filament. He tested 1,600 things (blind trial) before finding one that worked.</em></p>
-                </div>
-            </div>
-        </div>
-
-        <div id="equation" class="page-section">
-            <h1>The Creativity Equation Lab</h1>
-            <p>We define creativity mathematically as:</p>
-            <div style="font-size: 1.5rem; text-align: center; padding: 20px; background: white; border-radius: 10px;">
-                $$ c = (1 - p) \times u \times (1 - v) $$
-            </div>
-            <p>Where:</p>
+    <main>
+        
+        <div id="intro" class="page active">
+            <h2>Introduction: Solutions as Combinations</h2>
+            <p>Most solutions are actually combinations of existing ideas[cite: 5]. Consider these famous examples:</p>
             <ul>
-                <li>$(1-p)$ = <strong>Originality</strong> (The idea is rare)</li>
-                <li>$u$ = <strong>Utility</strong> (The idea works)</li>
-                <li>$(1-v)$ = <strong>Surprise</strong> (You didn't know it would work)</li>
+                <li><strong>The Wright Brothers' airplane:</strong> bicycle mechanics + combustion engine + boat propeller [cite: 6]</li>
+                <li><strong>Watson and Crick's DNA model:</strong> X-ray crystallography + chemical bonding rules + double helix structure [cite: 7]</li>
+            </ul>
+            
+            <div class="highlight-box">
+                <p>For decades, researchers asked "What is creativity?" Professor Dean Keith Simonton discovered we've been asking the wrong question. Instead, we should first ask: <strong>"What makes a solution NOT creative?"</strong> [cite: 13-14]</p>
+            </div>
+        </div>
+
+        <div id="variables" class="page">
+            <h2>The "DNA" of a Solution</h2>
+            <p>We can describe all solutions using three variables (0 to 1)[cite: 16]:</p>
+
+            <div class="grid-types">
+                <div class="type-card">
+                    <h3>p (Probability)</h3>
+                    <p><strong>"Is it obvious?"</strong> [cite: 18]</p>
+                    <p>High p (→1): The idea is obvious. First thing that pops into your head. <br><em>Ex: Drinking water when thirsty.</em> [cite: 19-20]</p>
+                    <p>Low p (→0): The idea is rare. <br><em>Ex: Drinking cactus juice in the desert.</em> [cite: 21-22]</p>
+                </div>
+
+                <div class="type-card">
+                    <h3>u (Utility)</h3>
+                    <p><strong>"Does it work?"</strong> [cite: 23]</p>
+                    <p>High u (→1): Works perfectly. <br><em>Ex: Using a key to open a door.</em> [cite: 24-25]</p>
+                    <p>Low u (→0): Fails completely. <br><em>Ex: Using a banana to open a door.</em> [cite: 26-27]</p>
+                </div>
+
+                <div class="type-card">
+                    <h3>v (Prior Knowledge)</h3>
+                    <p><strong>"Did you know it would work?"</strong> [cite: 28]</p>
+                    <p>High v (→1): You knew it would work beforehand. No surprise. <br><em>Ex: Your car key starting your car.</em> [cite: 30-32]</p>
+                    <p>Low v (→0): You had to test it to find out. <br><em>Ex: Wiggling a paperclip in a lock.</em> [cite: 33-35]</p>
+                </div>
+            </div>
+            <div class="highlight-box">
+                <p><strong>Crucial:</strong> v is the most important variable for creativity[cite: 28]. If you already know it will work (v→1), you are just executing expertise, not creating.</p>
+            </div>
+        </div>
+
+        <div id="types" class="page">
+            <h2>The 8 Types of Solutions</h2>
+            <p>There are 7 types of non-creative solutions and only 1 type of creative solution[cite: 38].</p>
+
+            <h3>Category 1: High Probability (Obvious Ideas) [cite: 41]</h3>
+            
+            <div class="grid-types">
+                <div class="type-card">
+                    <h4>1. Routine Ideas</h4>
+                    <p>Habitual responses. You know what to do, and it works. <br><em>Ex: Your morning coffee routine.</em> [cite: 42-45]</p>
+                    <div class="math-pattern">
+                        p→1 (Immediate)<br>
+                        u→1 (Works)<br>
+                        v→1 (Known) [cite: 49-52]
+                    </div>
+                </div>
+
+                <div class="type-card">
+                    <h4>2. Lucky Guesses</h4>
+                    <p>Your first instinct works, but you didn't know it would. <br><em>Ex: Guessing a birth year as a password.</em> [cite: 53-56]</p>
+                    <div class="math-pattern">
+                        p→1 (First instinct)<br>
+                        u→1 (Works)<br>
+                        v→0 (Unknown) [cite: 62-65]
+                    </div>
+                </div>
+
+                <div class="type-card">
+                    <h4>3. Spinning Your Wheels</h4>
+                    <p>Irrational Perseveration. Repeating a failed solution hoping for a different result. <br><em>Ex: Returning to a toxic relationship.</em> [cite: 66-71]</p>
+                    <div class="math-pattern">
+                        p→1 (Habitual)<br>
+                        u→0 (Fails)<br>
+                        v→1 (You know it fails) [cite: 75-78]
+                    </div>
+                </div>
+
+                <div class="type-card">
+                    <h4>4. Problem Finding</h4>
+                    <p>You expect it to work, but surprisingly it fails. This reveals a new problem. <br><em>Ex: Mercury's orbit violating Newton's laws.</em> [cite: 79-84]</p>
+                    <div class="math-pattern">
+                        p→1 (Obvious)<br>
+                        u→0 (Fails)<br>
+                        v→0 (Surprise failure) [cite: 92-95]
+                    </div>
+                </div>
+            </div>
+
+            <h3>Category 2: Low Probability (Rare Ideas) [cite: 97]</h3>
+
+            <div class="grid-types">
+                <div class="type-card">
+                    <h4>5. Smart Filtering</h4>
+                    <p>Rational Suppression. Avoiding ideas you know are useless. <br><em>Ex: Einstein not putting clowns in his equations.</em> [cite: 98-100]</p>
+                    <div class="math-pattern">
+                        p→0 (Avoided)<br>
+                        u→0 (Useless)<br>
+                        v→1 (Known useless) [cite: 107-110]
+                    </div>
+                </div>
+
+                <div class="type-card">
+                    <h4>6. Shooting Yourself in the Foot</h4>
+                    <p>Irrational Suppression. Avoiding useful ideas you know would work. <br><em>Ex: Refusing to exercise despite doctor's orders.</em> [cite: 111-115]</p>
+                    <div class="math-pattern">
+                        p→0 (Avoided)<br>
+                        u→1 (Useful)<br>
+                        v→1 (Known useful) [cite: 118-121]
+                    </div>
+                </div>
+
+                <div class="type-card">
+                    <h4>7. Mind-Wandering</h4>
+                    <p>Random daydreams. Mostly useless, but occasionally magical. <br><em>Ex: Random shower thoughts.</em> [cite: 122-127]</p>
+                    <div class="math-pattern">
+                        p→0 (Random)<br>
+                        u→0 (Useless)<br>
+                        v→0 (Unknown) [cite: 128-131]
+                    </div>
+                </div>
+
+                <div class="type-card creative">
+                    <h4>8. CREATIVE SOLUTIONS</h4>
+                    <p>The Golden Combination. <br><em>Ex: Edison's bamboo filament.</em> [cite: 140-146]</p>
+                    <ul>
+                        <li><strong>Low p:</strong> Not obvious (Edison tried 1600+ things).</li>
+                        <li><strong>High u:</strong> It actually works.</li>
+                        <li><strong>Low v:</strong> Genuine surprise (Blind to utility).</li>
+                    </ul>
+                    <div class="math-pattern">
+                        p→0 (Original)<br>
+                        u→1 (Useful)<br>
+                        v→0 (Surprising) [cite: 150-153]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="equation" class="page">
+            <h2>The Mathematical Formula</h2>
+            
+            <div class="equation-box">
+                c = (1 - p) × u × (1 - v)
+            </div>
+            
+            <p>Where:<br>
+            <strong>(1 - p)</strong> = Originality [cite: 165]<br>
+            <strong>u</strong> = Utility [cite: 166]<br>
+            <strong>(1 - v)</strong> = Surprise [cite: 167]</p>
+
+            <div class="highlight-box">
+                <h3>Why Multiplication?</h3>
+                <p>Because each factor is <strong>necessary but not sufficient</strong>[cite: 171]. If ANY factor is zero, the total creativity is zero.</p>
+                <p><em>Example:</em> A <strong>perpetual motion machine</strong> is highly original and surprising, but because it violates physics (u=0), it has <strong>zero creativity</strong>. Multiplication captures this "veto power." [cite: 178-179]</p>
+            </div>
+
+            <div class="type-card">
+                <h3>Try the Calculator</h3>
+                <p>Adjust the sliders to see how creativity changes.</p>
+                
+                <div class="slider-group">
+                    <label>Originality (1-p): <span id="val-p">0.5</span></label>
+                    <input type="range" id="input-p" min="0" max="1" step="0.1" value="0.5" oninput="calc()">
+                </div>
+                <div class="slider-group">
+                    <label>Utility (u): <span id="val-u">0.5</span></label>
+                    <input type="range" id="input-u" min="0" max="1" step="0.1" value="0.5" oninput="calc()">
+                </div>
+                <div class="slider-group">
+                    <label>Surprise (1-v): <span id="val-v">0.5</span></label>
+                    <input type="range" id="input-v" min="0" max="1" step="0.1" value="0.5" oninput="calc()">
+                </div>
+                
+                <h3 style="text-align: center;">Creativity Score (c) = <span id="result-c" style="color: var(--primary);">0.125</span></h3>
+            </div>
+            <p><em>Note: Mathematically, high creativity scores are extremely rare because you are multiplying three decimals. [cite: 300-302]</em></p>
+        </div>
+
+        <div id="process" class="page">
+            <h2>The Process: Incubation & Sightedness</h2>
+            
+            <div class="highlight-box">
+                <h3>Creativity and "Sightedness" are Opposites</h3>
+                <p>As sightedness (knowing what to do) increases, creativity decreases. To be creative, you must venture into territory where you don't know if ideas will work (v→0) and they aren't obvious (p→0). [cite: 296-298]</p>
+            </div>
+
+            <h3>The Role of Incubation</h3>
+            <p>Ideas that require incubation tend to be more creative. [cite: 254]</p>
+            <p><strong>Wallas' Four Stages (1926):</strong></p>
+            <ol>
+                <li><strong>Preparation:</strong> Gather info, define problem. [cite: 257]</li>
+                <li><strong>Incubation:</strong> Step away. Unconscious work. p shifts from 1 to 0. [cite: 258-260]</li>
+                <li><strong>Illumination:</strong> The "Aha!" moment. [cite: 261]</li>
+                <li><strong>Verification:</strong> Test it (discover u). [cite: 263]</li>
+            </ol>
+            
+            <p><strong>Takeaway:</strong> You must be "blind to eventual utility." If you already know it works, it's not creative. [cite: 276]</p>
+        </div>
+
+        <div id="tools" class="page">
+            <h2>Tools & Techniques</h2>
+            <p>Where do ideas come from? Scientists list many tools, but they all share one thing: they help generate ideas where you don't know the utility in advance (v→0). You generate, then test. [cite: 336-337]</p>
+            
+            <h3>Common Techniques [cite: 315-334]:</h3>
+            <ul style="column-count: 2; gap: 2rem;">
+                <li>Remote Association</li>
+                <li>Bisociation of Matrices</li>
+                <li>Combinatorial Play</li>
+                <li>Divergent Thinking</li>
+                <li>Abductive Reasoning</li>
+                <li>Mind Wandering</li>
+                <li>Serendipity</li>
+                <li>Tinkering</li>
             </ul>
 
-            <div class="card">
-                <h3>Simulator</h3>
-                <p>Adjust the sliders to see how the variables affect the total creativity score. Notice how if <strong>any</strong> factor is zero, the total creativity becomes zero.</p>
-
-                <div class="slider-container">
-                    <div class="slider-label">
-                        <span>Initial Probability (p) - How obvious is it?</span>
-                        <span id="val-p">1.0</span>
-                    </div>
-                    <input type="range" min="0" max="1" step="0.1" value="1" id="slider-p" oninput="calculate()">
-                    <div style="font-size: 0.9rem; color: #666;">High p = Obvious routine. Low p = Rare idea.</div>
-                </div>
-
-                <div class="slider-container">
-                    <div class="slider-label">
-                        <span>Utility (u) - Does it work?</span>
-                        <span id="val-u">1.0</span>
-                    </div>
-                    <input type="range" min="0" max="1" step="0.1" value="1" id="slider-u" oninput="calculate()">
-                    <div style="font-size: 0.9rem; color: #666;">High u = Solves the problem. Low u = Useless.</div>
-                </div>
-
-                <div class="slider-container">
-                    <div class="slider-label">
-                        <span>Prior Knowledge (v) - Did you know it would work?</span>
-                        <span id="val-v">1.0</span>
-                    </div>
-                    <input type="range" min="0" max="1" step="0.1" value="1" id="slider-v" oninput="calculate()">
-                    <div style="font-size: 0.9rem; color: #666;">High v = No surprise. Low v = Genuine discovery.</div>
-                </div>
-
-                <div class="result-box">
-                    <div>Creativity Score ($c$)</div>
-                    <div class="result-value" id="result-c">0.00</div>
-                    <div id="result-text">Routine Idea (Not Creative)</div>
-                </div>
+            <div class="highlight-box">
+                <h3>Focus for this Class:</h3>
+                <p>We will focus on two specific methods [cite: 339-342]:</p>
+                <ol>
+                    <li><strong>Pursuing your interests:</strong> Why this helps generate solutions.</li>
+                    <li><strong>Story:</strong> Why storytelling helps discover creative solutions.</li>
+                </ol>
             </div>
         </div>
 
-        <div id="implications" class="page-section">
-            <h1>Implications & Methods</h1>
+        <div id="quiz" class="page">
+            <h2>Exercise: Categorize These Solutions</h2>
+            <p>Identify which of the 8 types these scenarios represent [cite: 344-352].</p>
+
+            <div class="quiz-item">
+                <p><strong>Scenario A:</strong> You solve a crossword puzzle clue immediately because you know the answer. [cite: 346]</p>
+                <div class="quiz-options">
+                    <button class="quiz-btn" onclick="check(this, true)">Routine Idea (p→1, u→1, v→1)</button>
+                    <button class="quiz-btn" onclick="check(this, false)">Lucky Guess (p→1, u→1, v→0)</button>
+                    <button class="quiz-btn" onclick="check(this, false)">Creative Solution (p→0, u→1, v→0)</button>
+                </div>
+            </div>
+
+            <div class="quiz-item">
+                <p><strong>Scenario B:</strong> You randomly guess a password and it works, despite having no reason to think it was correct. [cite: 347]</p>
+                <div class="quiz-options">
+                    <button class="quiz-btn" onclick="check(this, false)">Routine Idea</button>
+                    <button class="quiz-btn" onclick="check(this, true)">Lucky Guess (p→1, u→1, v→0)</button>
+                    <button class="quiz-btn" onclick="check(this, false)">Problem Finding</button>
+                </div>
+            </div>
+
+            <div class="quiz-item">
+                <p><strong>Scenario C:</strong> A scientist keeps using a disproven theory because they refuse to accept it's wrong. [cite: 348]</p>
+                <div class="quiz-options">
+                    <button class="quiz-btn" onclick="check(this, false)">Problem Finding</button>
+                    <button class="quiz-btn" onclick="check(this, true)">Spinning Your Wheels (p→1, u→0, v→1)</button>
+                    <button class="quiz-btn" onclick="check(this, false)">Smart Filtering</button>
+                </div>
+            </div>
+
+            <div class="quiz-item">
+                <p><strong>Scenario D:</strong> You try to open a stuck jar using your usual method, but surprisingly it doesn't work this time. [cite: 349]</p>
+                <div class="quiz-options">
+                    <button class="quiz-btn" onclick="check(this, true)">Problem Finding (p→1, u→0, v→0)</button>
+                    <button class="quiz-btn" onclick="check(this, false)">Creative Solution</button>
+                    <button class="quiz-btn" onclick="check(this, false)">Spinning Your Wheels</button>
+                </div>
+            </div>
             
-            <div class="card">
-                <h2>1. The "Blindness" Requirement</h2>
-                <p>For an idea to be creative, you cannot know in advance whether it will work ($v \rightarrow 0$). If you already know the outcome, you are just applying expertise, not creating. This requires:</p>
-                <ul>
-                    <li><strong>Risk:</strong> Trying ideas that might fail.</li>
-                    <li><strong>Uncertainty Tolerance:</strong> Being comfortable not knowing.</li>
-                    <li><strong>Trial and Error:</strong> Testing to discover utility (like Edison).</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <h2>2. Incubation & Sightedness</h2>
-                <p>Creativity is inversely related to "Sightedness" (seeing the answer clearly). To find creative solutions, you must venture into low-sightedness territory.</p>
-                <p><strong>Incubation:</strong> Because creative ideas have low probability ($p \rightarrow 0$), they rarely come immediately. You often need to step away (sleep, walk, shower) to let the unconscious mind make connections.</p>
-            </div>
-
-            <div class="card">
-                <h2>3. Generating Ideas</h2>
-                <p>How do we generate these low probability ($p \rightarrow 0$), unknown utility ($v \rightarrow 0$) ideas? The document suggests many methods, all of which follow a "Generate then Test" pattern:</p>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div class="example-box">
-                        <strong>Generation Phase</strong><br>
-                        Mind Wandering<br>
-                        Combinatorial Play<br>
-                        Remote Association<br>
-                        Serendipity
-                    </div>
-                    <div class="example-box" style="border-left-color: var(--highlight);">
-                        <strong>Testing Phase</strong><br>
-                        Verification<br>
-                        Criticism<br>
-                        Experimentation<br>
-                        Refutation
-                    </div>
+             <div class="quiz-item">
+                <p><strong>Scenario E:</strong> You know exercising would improve your health, but you never do it. [cite: 350]</p>
+                <div class="quiz-options">
+                    <button class="quiz-btn" onclick="check(this, false)">Smart Filtering</button>
+                    <button class="quiz-btn" onclick="check(this, true)">Shooting Yourself in the Foot (p→0, u→1, v→1)</button>
+                    <button class="quiz-btn" onclick="check(this, false)">Mind Wandering</button>
                 </div>
             </div>
-        </div>
-
-        <div id="quiz" class="page-section">
-            <h1>Test Your Understanding</h1>
-            <p>Categorize the following scenarios based on the 8-Fold Typology.</p>
-
-            <div class="card">
-                <h3>Scenario 1</h3>
-                <p>You randomly guess a password and it works, despite having no reason to think that password was correct.</p>
-                <div id="q1-options">
-                    <div class="quiz-option" onclick="checkAnswer(this, true, 'Correct! High Probability (first guess), High Utility (works), Low Knowledge (pure luck).')">Lucky Guess</div>
-                    <div class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. In a creative solution, probability is low (not your first guess).')">Creative Solution</div>
-                    <div class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. Routine ideas require prior knowledge (you knew it would work).')">Routine Idea</div>
+            
+             <div class="quiz-item">
+                <p><strong>Scenario F:</strong> Picasso considered adding a color to Guernica, tested it, realized it didn't fit, and filtered it out. [cite: 351]</p>
+                <div class="quiz-options">
+                    <button class="quiz-btn" onclick="check(this, true)">Smart Filtering (p→0, u→0, v→1)</button>
+                    <button class="quiz-btn" onclick="check(this, false)">Shooting Yourself in the Foot</button>
+                    <button class="quiz-btn" onclick="check(this, false)">Creative Solution</button>
                 </div>
-                <p id="q1-feedback" style="font-weight: bold;"></p>
-            </div>
-
-            <div class="card">
-                <h3>Scenario 2</h3>
-                <p>Scientists used Newton's equations to predict Mercury's orbit, but the numbers didn't match observations. It failed surprisingly.</p>
-                <div id="q2-options">
-                    <div class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. Spinning wheels implies you knew it would fail but did it anyway.')">Spinning Your Wheels</div>
-                    <div class="quiz-option" onclick="checkAnswer(this, true, 'Correct! High Probability (obvious method), Low Utility (failed), Low Knowledge (surprising failure).')">Problem Finding</div>
-                    <div class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. Smart filtering happens before you try the solution.')">Smart Filtering</div>
-                </div>
-                <p id="q2-feedback" style="font-weight: bold;"></p>
-            </div>
-
-            <div class="card">
-                <h3>Scenario 3</h3>
-                <p>Picasso considered adding a specific color to <em>Guernica</em>, but realized based on his experience it wouldn't fit the emotional tone, so he never tried it.</p>
-                <div id="q3-options">
-                    <div class="quiz-option" onclick="checkAnswer(this, true, 'Correct! Low Probability (suppressed), Low Utility (wouldnt work), High Knowledge (he knew it).')">Smart Filtering</div>
-                    <div class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. Routine ideas are executed, not suppressed.')">Routine Idea</div>
-                    <div class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. He knew it would fail, so v is High.')">Problem Finding</div>
-                </div>
-                <p id="q3-feedback" style="font-weight: bold;"></p>
             </div>
 
         </div>
 
-    </div>
+    </main>
 
     <script>
-        // Page Navigation Logic
+        // Navigation Logic
         function showPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page-section').forEach(page => {
-                page.classList.remove('active');
-            });
-            // Show selected page
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             
-            // Update Sidebar Buttons
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
-
-            // Scroll to top
-            window.scrollTo(0,0);
         }
 
         // Calculator Logic
-        function calculate() {
-            const p = parseFloat(document.getElementById('slider-p').value);
-            const u = parseFloat(document.getElementById('slider-u').value);
-            const v = parseFloat(document.getElementById('slider-v').value);
+        function calc() {
+            let p = parseFloat(document.getElementById('input-p').value);
+            let u = parseFloat(document.getElementById('input-u').value);
+            let v = parseFloat(document.getElementById('input-v').value);
 
-            // Update labels
             document.getElementById('val-p').innerText = p.toFixed(1);
             document.getElementById('val-u').innerText = u.toFixed(1);
             document.getElementById('val-v').innerText = v.toFixed(1);
 
-            // The Equation: c = (1-p) * u * (1-v)
-            const c = (1 - p) * u * (1 - v);
-
-            // Update Result
+            // c = (1-p) * u * (1-v) -- NOTE: Inputs are already "Originality", "Utility", "Surprise"
+            // Wait, slider labels say "Originality (1-p)". So the input value IS the term (1-p).
+            // Let's fix logic: The equation is c = Org * Util * Surp.
+            let c = p * u * v; 
             document.getElementById('result-c').innerText = c.toFixed(3);
-
-            // Interpret Result
-            const resultText = document.getElementById('result-text');
-            
-            // Logic for naming the type based on variables (approximate)
-            if (c > 0.1) {
-                resultText.innerText = "CREATIVE SOLUTION!";
-                resultText.style.color = "#f1c40f";
-            } else if (p > 0.5 && u > 0.5 && v > 0.5) {
-                resultText.innerText = "Routine Idea (Boring)";
-                resultText.style.color = "white";
-            } else if (p > 0.5 && u > 0.5 && v < 0.5) {
-                resultText.innerText = "Lucky Guess";
-                resultText.style.color = "white";
-            } else if (u < 0.5 && v > 0.5) {
-                resultText.innerText = "Useless / Known Failure";
-                resultText.style.color = "#e74c3c";
-            } else if (u < 0.5 && v < 0.5 && p > 0.5) {
-                resultText.innerText = "Problem Finding (Surprising Failure)";
-                resultText.style.color = "#3498db";
-            } else {
-                resultText.innerText = "Non-Creative Combination";
-                resultText.style.color = "white";
-            }
         }
 
         // Quiz Logic
-        function checkAnswer(element, isCorrect, feedbackText) {
-            const parent = element.parentElement;
-            const feedbackEl = parent.nextElementSibling;
-            
-            // Reset colors
-            Array.from(parent.children).forEach(child => {
-                child.classList.remove('correct', 'incorrect');
-            });
-
-            if (isCorrect) {
-                element.classList.add('correct');
-                feedbackEl.style.color = '#155724';
-            } else {
-                element.classList.add('incorrect');
-                feedbackEl.style.color = '#721c24';
+        function check(btn, isCorrect) {
+            // Reset siblings
+            let parent = btn.parentElement;
+            let siblings = parent.getElementsByClassName('quiz-btn');
+            for(let sib of siblings) {
+                sib.classList.remove('correct', 'incorrect');
             }
-            feedbackEl.innerText = feedbackText;
-        }
 
-        // Initialize calculator
-        calculate();
+            if(isCorrect) {
+                btn.classList.add('correct');
+                btn.innerText += " ✅ Correct!";
+            } else {
+                btn.classList.add('incorrect');
+                btn.innerText += " ❌ Try again";
+            }
+        }
+        
+        // Init calc
+        calc();
     </script>
 </body>
-</html># Creativity-Equation
+</html>
